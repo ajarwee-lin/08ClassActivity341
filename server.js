@@ -22,6 +22,10 @@ app.get('/', (req, res) => {
   res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
 });
 
+app.get('/profile', requireresAuth(), (req, res) => {
+  res.sendFile(JSON.stringify(req.oidc.user));
+
+});
 app.listen (port, () => {
   console.log('listening on port ${port}');
 });
