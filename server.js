@@ -24,8 +24,8 @@ app.get('/', (req, res) => {
 
 app.get('/profile', requiresAuth(), (req, res) => {
   res.send(JSON.stringify(req.oidc.user));
-
 });
-app.listen (port, () => {
-  console.log('listening on port ${port}');
+
+app.listen(port, () => {
+  console.log(`listening on port ${port}`);
 });
