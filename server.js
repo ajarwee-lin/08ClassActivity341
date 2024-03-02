@@ -1,12 +1,13 @@
 const { auth } = require('express-openid-connect');
+require ('dotenv').config();
 
 const config = {
   authRequired: false,
   auth0Logout: true,
-  secret: 'a long, randomly-generated string stored in env',
-  baseURL: 'http://localhost:3000',
-  clientID: 'sjFZnCsdcXtj7Stao1Ui8sAgj9EFlxy6',
-  issuerBaseURL: 'https://dev-55jpv4zapj70w68l.us.auth0.com'
+  secret: process.eventNames.SECRET,
+  baseURL: process.eventNames.BASE_URL,
+  clientID: process.env.CLIENT_ID,
+  issuerBaseURL: process.eventNames.ISSUER_BASE_URL,
 };
 
 // auth router attaches /login, /logout, and /callback routes to the baseURL
