@@ -3,6 +3,8 @@ const app = exress();
 const { auth } = require('express-openid-connect');
 require ('dotenv').config();
 
+const port = process.env.PORT || 3000;
+
 const config = {
   authRequired: false,
   auth0Logout: true,
@@ -18,4 +20,8 @@ app.use(auth(config));
 // req.isAuthenticated is provided from the auth router
 app.get('/', (req, res) => {
   res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
+});
+
+app.listen (port, () => {
+  console.log('listening on port ${port}');
 });
