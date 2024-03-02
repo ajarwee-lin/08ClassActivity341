@@ -1,7 +1,12 @@
 const express = require('express');
 const app = express();
 const { auth, requiresAuth } = require('express-openid-connect');
-require ('dotenv').config();
+require('dotenv').config();
+
+const mongoose = require('mongoose');
+const Contact = require('./contact');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger-output.json');
 
 const port = process.env.PORT || 3000;
 
@@ -14,6 +19,18 @@ const config = {
   issuerBaseURL: process.env.ISSUER_BASE_URL,
 };
 
+// establish a connection to the mongo database
+mongoose.connect(process.env.MONGODB_URI,
+  { useNewUrlParser: true }, (err, res) => {
+     if (err) {
+        console.log('Connection failed: ' + err);
+     }
+     else {
+        console.log('Connected to database!');
+     }
+  }
+);
+
 // auth router attaches /login, /logout, and /callback routes to the baseURL
 app.use(auth(config));
 
@@ -25,6 +42,19 @@ app.get('/', (req, res) => {
 app.get('/profile', requiresAuth(), (req, res) => {
   res.send(JSON.stringify(req.oidc.user));
 });
+
+
+app.get('/contacts', requiresAuth(), (req, res) => {
+  console.log(req)
+  Contact.find()
+  .then(contacts => {
+    res.status(200).json(contacts)
+  }).catch(err => {
+    res.status(500).json({ message: 'An error occured', error: err })
+  })
+})
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.listen(port, () => {
   console.log(`listening on port ${port}`);
